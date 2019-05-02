@@ -1,0 +1,371 @@
+《大火星系统 自定义静默参数方法，配置》
+
+#、例如软件名称是“2345.exe”
+
+#、新建参数文本名“2345.txt”同在一个目录下，把参数写入txt文本中即可。
+
+#、软件名和文本名，一定要同名，否则无法识别。
+
+#、无参数软件，自动添加“/S”参数(大火星映像，支持官方软件直接静默安装)
+
+#、可以下载装机版看看，里面有静默参数例子。
+
+#、静默软件放在“2345.hx74.cn”文件夹和“up.hx74.cn”文件夹。
+
+#、“up.hx74.cn”文件夹是部署中调用exe程序。
+
+#、“2345.hx74.cn”文件夹是首进桌面调用exe程序。
+
+
+
+
+
+【静默技术论坛】：http://bbs.hx74.cn/forum-36-1.html
+
+静默参数调用，静默参数操作方法
+
+《大火星映像 支持官方软件直接放入Soft_112358文件夹中自动安装》
+
+《提示：软件一定要官方下载的，不是百度下载的》
+
+
+
+
+
+【bat,批处理静默运行界面调用代码格式】如何使用静默参数?
+
+@echo off
+
+start /wait 软件名.exe /参数
+
+pause 
+
+rem 不懂的朋友，进入火星论坛交流，保存为.bat格式
+
+
+
+
+
+【常规软件 /静默参数】
+
+○7-ZIP.exe /S
+
+○WinRAR.exe /S
+
+○阿里旺旺淘宝买家版 /S
+
+○飞信 /S
+
+○360安全卫士 /S
+
+○超级兔子 /S
+
+○PPLive/S
+
+○迅雷 /S
+
+○金山词霸 /S
+
+○百度云 /S
+
+○QQ /S
+
+○腾讯QQ企业版 /S
+
+○腾讯TM /S
+
+○腾讯通RTX /S
+
+○腾讯微信 /S
+
+○有道词典 /S
+
+
+
+
+
+【系统插件，补丁，运行库 /静默参数】
+
+○Adobe_Flash_Player 旧版/S，新版/install，卸载 -maintain activex
+
+○FlashPlayer27axau_ra_install /install
+
+○Adobe Reader xi /install
+
+○Adobe Reader DC /install
+
+○Total Commander：解压出来install.inf中auto=1即可自动安装
+
+○Adobe PDF Reader v9.1.exe /sAll
+
+○Adobe Acrobat X Pro（msiexec.exe文件）/i AcroPro.msi /quiet /norestart
+
+○Foxit PDF Reader /S
+
+○Foxmail  /sp- /verysilent /norestart
+
+○360驱动大师（装机版） /q
+
+○驱动精灵（装机版） -a
+
+○万能驱动7 /fa /c
+
+○IT天空VC++ /Q
+
+○IT天空.NET /Q
+
+○微软VC++ /S 或者 /Q
+
+○微软.NET /S 或者 /Q
+
+○Windows补丁 /quiet /norestart(如,WindowsXP-KB915865-x86.exe)
+
+
+
+
+
+【推广软件 /静默参数】
+
+○2345推广软件P7 静默配置2345pack.ini 打开修改“0”为“1” StartAuto=1
+
+○360浏览器 --silent-install=3_1_1
+
+○360安全卫士 /S
+
+○360有钱联盟集合推广软件 /S
+
+○7654云智能输入法 -jingmo
+
+○QQ浏览器 /S （QQBrowser_subid@你的账号）
+
+○手心浏览器 /S
+
+
+
+
+
+【系统常用 /静默参数】
+
+○Google拼音 /S
+
+○搜狗输入法 /S
+
+○酷狗音乐 /S
+
+○驱动精灵 /S
+
+○CPU-Z /S
+
+○Google Picasa /S
+
+○迅雷看看播放器 /S
+
+○网易有道桌面词典 /S
+
+○微软雅黑字体 /Q
+
+○虚拟机VMware-workstation /silent /noSilentReboot
+
+○7Zip -y /q /r:n
+
+
+
+
+
+【网络与安全、杀毒软件 /静默参数】
+
+○百度卫士 /S
+
+○金山词霸 /S
+
+○微软TMG防火墙msiexec.exe /i netfs.msi /quiet /norestart/norestart
+
+○E8-WindowsXP-x86-CHS.exe /quiet /update-no /promptrestart
+
+○Microsoft Security Essential (MSE)mseinstall /s /q /o /runwgacheck
+
+○微软杀毒MSEinstall静默参数 /s /q /o /runwgacheck
+
+
+
+
+
+【.MSI与.MSP /静默参数】
+
+○.msi 格式msmxl4sp3.msi /quiet
+
+○.msi 格式msiexec.exe /i ActiveSync.msi /quiet /norestart 
+
+○.msp 格式msiexec.exe /p hotfix.msp /quiet /norestart
+
+○.Visual C++ 2008 (VC8) /q 或 /Q
+
+○.Visual C++ 2009 (VC9) /q
+
+○.Visual C++ 2010 (VC10) /q
+
+○.Microsoft .NET Framework 1.1 /q 或 /Q
+
+○.Microsoft .NET Framework 2.0 /q
+
+○.Microsoft .NET Framework 3.0 /q
+
+○.Microsoft .NET Framework 3.5 /q
+
+○.Microsoft .NET Framework 4.0 /q
+
+○.foxmail /S
+
+
+
+
+
+【激活工具，静默参数】
+
+Windows Loader 静默参数 /silent /norestart
+
+暴风Win8\Win10激活工具 静默参数 auto
+
+小马激活工具 静默参数 /a /acer /random /protect
+
+
+
+
+
+【手机相关 /静默参数】
+
+○.91mobilesetup_v3.1.8.583.exe /sp- /verysilent /norestart
+
+○iTunes解压出来均是msi格式文件，只需要注意参考下面的安装顺序即可
+
+○iTunes /quiet（/S出现静默帮忙，按提示静默）
+
+(1) AppleApplicationSupport.msi
+
+(2) AppleMobileDeviceSupport.msi"
+
+(3) AppleSoftwareUpdate.msi"
+
+(4) Bonjour.msi"
+
+(5) iTunes.msi"
+
+○ Nokia 套件同理解压出来均是msi文件，顺序：
+
+(1) Packages\CCD\Setup\Nokia_Connectivity_Cable_Driver.msi
+
+(2) Packages\PCCS\Setup\PCCS.msi
+
+(3) Packages\VC80_x86\Setup\VC80_x86_v2.msi 或 Packages\VC80_x64\Setup\VC80_x64_v2.msi
+
+(4) Packages\Nokia_Suite\Setup\Nokia_Suite.msi
+
+
+
+
+
+【办公软件 /静默参数】
+
+○ACDSee /a 解压
+
+○CorelDraw 静默程序Setup32.exe /silent（很少界面的静默安装）；新版本是MSI
+
+○AutoCAD 2004/AuctoCAD 2007找到AutoCAD\ACAD.msi文件,参数为msiexec.exe /i  
+
+acad.msi ACADSERIALPREFIX=<序列号前缀:111> ACADSERIALNUMBER=<序列号:20111111>  ACADFIRSTNAME=<注册者姓> ACADLASTNAME=<注册者名> ACADORGANIZATION=<注册
+
+
+单位>  ACADDEALER=<经销商>  ACADDEALERPHONE=<经销商电话12345> /quiet
+○ Office 2003 Professional
+
+○office 2003用/a参数解压；
+
+○Office 2007 Service Pack /a /d 补丁包用/extract解压；
+
+○金山办公 WPS /S
+
+方法1：对office2003原始安装光盘进行重新封装（也称：管理员安装方式），使其支持网络安装。运行原始安装光盘下的Setup.exe /a，然后输入序列号，选择一个文件
+
+
+
+夹作为office安装点。（如在硬盘上的d:\office）运行msiexec.exe /i Pro11.msi /quiet /norestart即可
+
+方法2：Step3：制作定制安装的MST文件：运行office 2003 resource kit工具的Custom Installation Wizard，创建一个对应的MST文件，存放在Office 2003目录下。（
+
+
+
+在setup和pro11.msi文件同一目录）msiexec.exe /a pro11.msi /p setup.msp
+
+○ Office 2003 兼容包FileFormatConverters.exe /quiet /norestart
+
+○ Office System 2007 /Office System 2010  (包括Project/Visio)运行setup.exe /admin，用Office 2007自定义工具生成.msp文件（包含同意许可协议、序列号、注
+
+
+
+册信息、显示级别等内容），msp文件名字可随意取。(下图为：Auto_Office_2007.msp，其它的msp是Office 2007 Service Pack 3运行/extract后解压出来的安装文件)将
+
+
+
+定制后的msp放到Office 2007/2010的Updates目录后，运行根目录下的setup.exe 即可实现全自动安装（office 2007/2010的Service Pack补丁包同样适用，放入Updates
+
+
+
+目录即可）另外要集成Office 2007或2010的Service Pack，只需要运行Service Pack的exe安装程序后加/extract参数到Office 的Updates目录即可。
+
+【静默参数大全】静默安装参数调用，静默查询操作方法
+
+【静默参数大全】静默安装参数调用，静默查询操作方法
+
+【静默参数】静默安装参数调用，静默查询操作方法
+
+【手工测试】拿到一个安装程序，用/?查询下。
+
+如果不支持/?参数，还可以用各静默安装参数试试就知道了
+
+[/a] 安装显示进程
+
+[/a /d] 安装显示进度并安装在D盘
+
+[/norestart]]
+
+[-q] 
+
+[/q]
+
+[/qn]
+
+[/qb] 
+
+[/q:a /r:n]
+
+[/quiet]
+
+[REBOOT=SUPPRESS]
+
+[-s]
+
+[/S] 【常见静默参数】
+
+[/sp-]
+
+[/SilentInstallNoSponsor]
+
+[/SilentInstall] 
+
+[/s /qn]
+
+[/s /qd] 
+
+[/silent [/noreboot]] 
+
+[/s /v/qn] 
+
+[sp- /silent /norestart] 【以前常见静默参数】
+
+[/u /n /z]
+
+[/verysilent]
+
+
+
+【静默技术论坛】：http://bbs.hx74.cn/forum-36-1.html
