@@ -12,6 +12,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 Global strInstallSourceHome := "E:\mydoc\20190417 国英装机 0402 给蔡平易装机用到的软件"
 
+Global strLogFolder := "D:\portable\SilentInstall_Logs"
 
 
 SetupGlobalEnvironment(){
@@ -257,6 +258,10 @@ Install_IrfanView(){
 TotalAutoSilentInstall(){
     ;实现全部安装包的静默安装。
 
+    makeSpecialFolders("D:")
+
+    ;return
+
     Install_FastCopy()
 
     Install_Everything()
@@ -268,6 +273,8 @@ TotalAutoSilentInstall(){
 
     Install_IrfanView()
 
+    ;Install_NoSleep()   ;权限问题没搞好。
+
 }
 
 !+L::
@@ -276,7 +283,7 @@ TotalAutoSilentInstall(){
 
 Install_Listary(){
     ; 安装Listary，不区分32和64位。
-    strToRun := % """" .  strInstallSourceHome . "\" . "Listary.exe" . """" . " /VERYSILENT /LOG:D:\Listary.log /NOCANCEL /NORESTART /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /LANG=SimplifiedChinese /NOICONS " . " /DIR=D:\portable\Listary_Silent_Install" 
+    strToRun := % """" .  strInstallSourceHome . "\" . "Listary.exe" . """" . " /VERYSILENT /LOG:D:\Listary.log /NOCANCEL /NORESTART /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /LANG=Chs /NOICONS " . " /DIR=D:\portable\Listary_Silent_Install" 
     LogEvent(A_LineNumber, "准备运行 = " . strToRun)
     ;msgbox % strToRun
     RunWait, %strToRun%
@@ -285,5 +292,151 @@ Install_Listary(){
 
 }
 
+!+d::
+    makeSpecialFolders("D:")
+    return
+
+makeSpecialFolders(strTotalHomeFolder){  ; 创建特殊的文件夹
+
+    LogEvent(A_LineNumber, "准备创建文件夹，父亲文件夹是 = " . strTotalHomeFolder)
+
+    FileCreateDir, % strTotalHomeFolder . "\视频"
+    FileCreateDir, % strTotalHomeFolder . "\图片"
+    FileCreateDir, % strTotalHomeFolder . "\文档"
+    FileCreateDir, % strTotalHomeFolder . "\下载"
+    FileCreateDir, % strTotalHomeFolder . "\音乐"
+    FileCreateDir, % strTotalHomeFolder . "\桌面"
+
+    LogEvent(A_LineNumber, "文件夹创建完毕，父亲文件夹是 = " . strTotalHomeFolder)
+
+    ;FileCreateDir, 图片
+    ;FileCreateDir, 文档
+    ;FileCreateDir, 下载
+    ;FileCreateDir, 音乐
+    ;FileCreateDir, 桌面
+
+
+}
 
 ;http://www.jrsoftware.org/ishelp/index.php?topic=setupcmdline
+
+!+p::  ; power to not sleep
+    Install_NoSleep()
+    return
+
+Install_NoSleep(){
+
+
+    strFullPath_NoSleep := % strInstallSourceHome . "\NoSleep.exe"
+
+    strToExplorer := % "explorer.exe /select, " . """" .  strFullPath_NoSleep . """"
+
+    Run, %strToExplorer%
+
+    LogEvent(A_LineNumber, "准备放置不睡眠的软件 = " . strFullPath_NoSleep)
+
+    ; 检测文件是否存在。
+    if !FileExist(strFullPath_NoSleep){
+       MsgBox % "源文件不存在 = " . strFullPath_NoSleep
+       return
+    }
+
+    EnvGet, myPrimaryFolder, USERPROFILE
+
+    ; msgbox % myPrimaryFolder
+
+    myStartUp := % myPrimaryFolder . "\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"
+
+    LogEvent(A_LineNumber, "取得启动文件夹的全路径名 = " . myStartUp)
+
+    ; 如果文件存在，则要取得shell folder (startup)
+    ; strDestFolder := GetStartUpPath()
+    strDestFolder := % myStartUp  . "\NoSleep.exe"
+
+    strToExplorer := % "explorer.exe /select, " . """" .  strDestFolder . """"
+
+    Run, %strToExplorer%
+
+    LogEvent(A_LineNumber, "取得目标文件夹 = " . strDestFolder)
+
+    ;执行拷贝操作。
+    FileCopy, %strFullPath_NoSleep%, %strDestFolder% , 1 ; 1 overwrite
+
+;RunAs, Administrator, MyPassword
+;Run, RegEdit.exe
+;RunAs  ; Reset to normal behavior.
+
+}
+
+;GetCommonPath( csidl ) ; csidl as a string
+GetStartUpPath(){ 
+
+    EnvGet, myPrimaryFolder, USERPROFILE
+
+    msgbox % myPrimaryFolder
+
+    myStartUp := % myPrimaryFolder . "\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"
+
+    LogEvent(A_LineNumber, "取得启动文件夹的全路径名 = " . myStartUp)
+
+    return myStartUp
+
+        ;static init 
+
+        ;if !init 
+        ;{ 
+    CSIDL_APPDATA                 =0x001A     ; Application Data, new for NT4 
+    CSIDL_COMMON_APPDATA          =0x0023     ; All Users\Application Data 
+    CSIDL_COMMON_DOCUMENTS        =0x002e     ; All Users\Documents 
+    CSIDL_DESKTOP                 =0x0010     ; C:\Documents and Settings\username\Desktop 
+    CSIDL_FONTS                   =0x0014     ; C:\Windows\Fonts 
+    CSIDL_LOCAL_APPDATA           =0x001C     ; non roaming, user\Local Settings\Application Data 
+    CSIDL_MYMUSIC                 =0x000d     ; "My Music" folder 
+    CSIDL_MYPICTURES              =0x0027     ; My Pictures, new for Win2K 
+    CSIDL_PERSONAL                =0x0005     ; My Documents 
+    CSIDL_PROGRAM_FILES_COMMON    =0x002b     ; C:\Program Files\Common 
+    CSIDL_PROGRAM_FILES           =0x0026     ; C:\Program Files 
+    CSIDL_PROGRAMS                =0x0002     ; C:\Documents and Settings\username\Start Menu\Programs 
+    CSIDL_RESOURCES               =0x0038     ; %windir%\Resources\, For theme and other windows resources. 
+    CSIDL_STARTMENU               =0x000b     ; C:\Documents and Settings\username\Start Menu 
+    CSIDL_STARTUP                 =0x0007     ; C:\Documents and Settings\username\Start Menu\Programs\Startup. 
+    CSIDL_SYSTEM                  =0x0025     ; GetSystemDirectory() 
+    CSIDL_WINDOWS                 =0x0024     ; GetWindowsDirectory() 
+        ;} 
+
+        
+    ;val = % CSIDL_%csidl% 
+    ;msgbox % "value = " . val
+    ;VarSetCapacity(fpath, 256) 
+    ; DllCall( "shell32\SHGetFolderPathA", "uint", 0, "int", CSIDL_STARTUP, "uint", 0, "int", 0, "str", fpath) 
+    ;return %fpath% 
+
+}
+
+!+X::    ; Install Pdf x-change viewer
+    Install_PDFXChange_Viewer()
+    return
+
+Install_PDFXChange_Viewer(){
+    ; 还要解决绝对化关联问题，不然关联不稳定。
+    
+    FileCreateDir, % strLogFolder
+
+    ; 安装PDFXChange Viewer，不区分32和64位。
+    strToRun := % """" .  strInstallSourceHome . "\" . "PDFXVwer.exe" . """" . " /VERYSILENT /NOCANCEL /NORESTART /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /LANG=Chs /NOICONS /NODESKICON /NOINSTASK /PDFV /PDFVINBROWSER  " . " /DIR=D:\portable\PDFXChange_Viewer_Silent_Install " . " /LOG=" . """" . strLogFolder . "\PDFXViewer.log" . """" 
+    LogEvent(A_LineNumber, "准备运行 = " . strToRun)
+    ;msgbox % strToRun
+    RunWait, %strToRun%
+    LogEvent(A_LineNumber, "运行完毕 = " . strToRun)
+}
+
+!+R::    ; Install Reboot & Restore
+         ; 查了官网，没有命令行选项。
+
+    Install_RebootRestoreRx()
+    return
+
+Install_RebootRestoreRx(){
+    ; 先解压
+    ; 再根据需要，启动那两个文件。 
+}
