@@ -14,6 +14,10 @@ Global strInstallSourceHome := "E:\mydoc\20190417 国英装机 0402 给蔡平易
 
 Global strLogFolder := "D:\portable\SilentInstall_Logs"
 
+Global strSetUserFTA_q2 := % """" . strInstallSourceHome . "\bin_SetUserFTA\SetUserFTA.exe" . """"
+
+Global strFullPath_WinRAR :=  % """" . "E:\Program Files\WinRAR\WinRAR.exe" . """"
+
 
 SetupGlobalEnvironment(){
     strInstallSourceHome := "E:\mydoc\20190417 国英装机 0402 给蔡平易装机用到的软件"
@@ -220,6 +224,8 @@ Install_FastCopy(){
 
 Install_IrfanView(){
     strOptions := " /silent /desktop /group /allusers /assoc=1 /ini "
+    strAssocApplicationID := ""
+
     if (A_Is64bitOS = 1){
         strToRun := % """" . strInstallSourceHome . "\" . "iview450_x64_setup.exe" . """" . strOptions . "/folder=" . """" . "D:\portable\IrfanView64_Auto_Silent_Install" . """"
         ;msgbox % strToRun
@@ -230,10 +236,10 @@ Install_IrfanView(){
         RunWait  %strToRun%
         LogEvent(A_LineNumber, "运行结束 = " . strToRun)
 
-        
-        ;strToRun2 :=  % """" . strInstallSourceHome . "\" . "irfanview_lang_chinese.exe" . """" . " /silent /folder=" . """" .  "D:\portable\IrfanView64_Auto_Silent_Install" . """"
-        ;msgbox % strToRun2
-        ;RunWait, %strToRun2%
+        strAssocApplicationID := "Applications\i_view64.exe"
+            ;strToRun2 :=  % """" . strInstallSourceHome . "\" . "irfanview_lang_chinese.exe" . """" . " /silent /folder=" . """" .  "D:\portable\IrfanView64_Auto_Silent_Install" . """"
+            ;msgbox % strToRun2
+            ;RunWait, %strToRun2%
 
     }else{
         strToRun := % """" . strInstallSourceHome . "\" . "iview450_setup.exe" . """" . strOptions  . "/folder=" . """" . "D:\portable\IrfanView32_Auto_Silent_Install" . """"
@@ -242,8 +248,27 @@ Install_IrfanView(){
         FileAppend %strTime% 行号 %A_LineNumber% 安装 IrfanView %strToRun% `n, Test.log, UTF-8
 
         RunWait, %strToRun%
+        
+        strAssocApplicationID := "Applications\i_view32.exe"
 
     }
+
+    strRunAssoc := % strSetUserFTA_q2 . " .jpg " .  """" . strAssocApplicationID . """"
+    LogEvent(A_LineNumber, "准备运行 = " . strRunAssoc)
+    RunWait, %strRunAssoc%
+
+
+    strRunAssoc := % strSetUserFTA_q2 . " .jpeg " .  """" . strAssocApplicationID . """"
+    LogEvent(A_LineNumber, "准备运行 = " . strRunAssoc)
+    RunWait, %strRunAssoc%
+
+
+    strRunAssoc := % strSetUserFTA_q2 . " .png " .  """" . strAssocApplicationID . """"
+    LogEvent(A_LineNumber, "准备运行 = " . strRunAssoc)
+    RunWait, %strRunAssoc%
+
+    ; "Applications\i_view64.exe"
+
     Sleep 3000
     LogEvent(A_LineNumber, "要再安装相关的语言包")
     return
@@ -262,18 +287,39 @@ TotalAutoSilentInstall(){
 
     ;return
 
+    Install_WinRAR()   ;解压软件一定要先安装。
+
     Install_FastCopy()
+
+    Install_InputMethods()
+
+    Install_Fonts() ; E:\mydoc\20190417 国英装机 0402 给蔡平易装机用到的软件\bin_fontreg-2.1.3-redist\bin.x86-64\FontReg.exe
 
     Install_Everything()
 
     Install_Listary()
+
+    Install_NotePlusPlus()
+
+    Install_Office2007()
 
     Install_ChromeBrowser()
 
 
     Install_IrfanView()
 
+    Install_PDFXChange_Viewer()
+
+    Install_RevoUninstaller()
+
     ;Install_NoSleep()   ;权限问题没搞好。
+    Install_Nero2018()   ; 安装耐录 2018
+
+    Install_HuoRong()
+
+    Install_WindowsUpdateBlocker() ; Windows Update Blocker
+
+    Install_RebootRestoreRx()  ; 放在最后，要重启的。
 
 }
 
@@ -423,11 +469,46 @@ Install_PDFXChange_Viewer(){
     FileCreateDir, % strLogFolder
 
     ; 安装PDFXChange Viewer，不区分32和64位。
-    strToRun := % """" .  strInstallSourceHome . "\" . "PDFXVwer.exe" . """" . " /VERYSILENT /NOCANCEL /NORESTART /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /LANG=Chs /NOICONS /NODESKICON /NOINSTASK /PDFV /PDFVINBROWSER  " . " /DIR=D:\portable\PDFXChange_Viewer_Silent_Install " . " /LOG=" . """" . strLogFolder . "\PDFXViewer.log" . """" 
+    strToRun := % """" .  strInstallSourceHome . "\" . "PDFXVwer.exe" . """" . " /VERYSILENT /NOCANCEL /NORESTART /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /LANG=Chs /NOICONS /NODESKICON /NOINSTASK /PDFV /PDFVINBROWSER  " . " /DIR=D:\portable\PDFXChange_Viewer_Silent_Install2 " . " /LOG=" . """" . strLogFolder . "\PDFXViewer.log" . """" 
     LogEvent(A_LineNumber, "准备运行 = " . strToRun)
     ;msgbox % strToRun
     RunWait, %strToRun%
     LogEvent(A_LineNumber, "运行完毕 = " . strToRun)
+
+    ; 安装 PDFXChange Viewer 关联问题。E:\mydoc\20190417 国英装机 0402 给蔡平易装机用到的软件\bin_SetUserFTA\SetUserFTA.exe
+    ; 无法完善运行，有待进一步解决。
+    strSetUserFTA_q2 := % """" . strInstallSourceHome . "\bin_SetUserFTA\SetUserFTA.exe" . """"
+                                                        ;D:\portable\PDFXChange_Viewer_Silent_Install\PDF Viewer\PDFXCview.exe
+    strRunAssoc := % strSetUserFTA_q2 . " .pdf " .  """" . "Applications\PDFXCview.exe" . """"
+
+    ;msgbox % strRunAssoc
+    ; 还是有语言模式无法自动切换的问题。
+
+    LogEvent(A_LineNumber, "准备运行 = " . strRunAssoc)
+
+    RunWait, %strRunAssoc%
+
+    Run, "D:\portable\PDFXChange_Viewer_Silent_Install2\PDF Viewer\PDFXCview.exe"
+
+}
+
+!+j::
+    Install_WinRAR()
+    return
+
+Install_WinRAR(){
+    if (A_Is64bitOS = 1){
+        strToRun := % """" . strInstallSourceHome . "\" . "winrar-x64-570.exe" . """" . " /S "
+        LogEvent(A_LineNumber, "准备运行 ＝ " . strToRun)
+        RunWait, %strToRun%
+        LogEvent(A_LineNumber, "运行完毕 ＝ " . strToRun)
+    }else{
+        strToRun := % """" . strInstallSourceHome . "\" . "winrar570.exe" . """" . " /S "
+        LogEvent(A_LineNumber, "准备运行 ＝ " . strToRun)
+        RunWait, %strToRun%
+        LogEvent(A_LineNumber, "运行完毕 ＝ " . strToRun)
+
+    } 
 }
 
 !+R::    ; Install Reboot & Restore
@@ -438,5 +519,249 @@ Install_PDFXChange_Viewer(){
 
 Install_RebootRestoreRx(){
     ; 先解压
+    strFullPath_WinRAR := % """" . "E:\Program Files\WinRAR\WinRAR.exe" . """"
+    strFullPath_InstallPack := % """" . strInstallSourceHome . "\" . "RebootRestoreRx31.zip" . """"
+    strFullPath_ExtractDest := %   strInstallSourceHome . "\RebootRestoreRx" 
+    strFullPath_ExtractDest_q2 := %  """" . strInstallSourceHome . "\RebootRestoreRx" . """" 
+    
+    ;生成解压命令
+    ;if (A_Is64bitOS = 1){
+    FileCreateDir , % strFullPath_ExtractDest
+    strCmd_ToRun := % strFullPath_WinRAR . " x -y " . strFullPath_InstallPack . " " . strFullPath_ExtractDest_q2
+    ;msgbox % strCmd_ToRun
+    LogEvent(A_LineNumber, "准备运行 ＝ " . strCmd_ToRun)
+    RunWait, %strCmd_ToRun%
+    LogEvent(A_LineNumber, "运行完毕 ＝ " . strCmd_ToRun)
+
+    strInstallApp = ""
+    if (A_Is64bitOS = 1){
+        ; E:\mydoc\20190417 国英装机 0402 给蔡平易装机用到的软件\RebootRestoreRx\Reboot Restore Rx 20181206 v3.1\x64.exe
+        strInstallApp := % """" . strInstallSourceHome . "\RebootRestoreRx\Reboot Restore Rx 20181206 v3.1\x64.exe" . """"
+    }else{
+        ;E:\mydoc\20190417 国英装机 0402 给蔡平易装机用到的软件\RebootRestoreRx\Reboot Restore Rx 20181206 v3.1\Setup.exe
+        strInstallApp := % """" . strInstallSourceHome . "\RebootRestoreRx\Reboot Restore Rx 20181206 v3.1\Setup.exe" . """"
+    }
+
+    LogEvent(A_LineNumber, "准备运行 ＝ " . strInstallApp)
+
+    Run, %strInstallApp%
+
     ; 再根据需要，启动那两个文件。 
+}
+
+!+u::
+    Install_WindowsUpdateBlocker()
+    return
+
+
+Install_WindowsUpdateBlocker(){
+    ; 安装好更新阻止器
+    strFullPath_WinRAR :=  % """" . "E:\Program Files\WinRAR\WinRAR.exe" . """"
+
+    strFullPath_InstallPack := % """" . strInstallSourceHome . "\" . "wub.zip" . """"
+
+    strFullPath_ExtractDest := % "D:\portable\WindowsUpateBlocker_Auto"
+
+    ; 生成解压命令，先创建文件。
+    FileCreateDir, % strFullPath_ExtractDest
+
+    strCmd_Extract := % strFullPath_WinRAR . " x -y " . strFullPath_InstallPack . " " . """" . strFullPath_ExtractDest . """"
+
+    LogEvent(A_LineNumber, "准备运行 ＝ " . strCmd_Extract)
+    RunWait, %strCmd_Extract%
+    LogEvent(A_LineNumber, "运行完毕 ＝ " . strCmd_Extract)
+
+    ; D:\portable\WindowsUpateBlocker_Auto\Wub_v1.1\Wub.exe
+    strApp_Path := % """" . strFullPath_ExtractDest . "\Wub_v1.1\Wub.exe" . """" . " /D /P "
+    LogEvent(A_LineNumber, "准备运行 ＝ " . strApp_Path)
+    Run % strApp_Path
+
+}
+
+!+s::
+    Install_RevoUninstaller()
+    return
+
+Install_RevoUninstaller(){
+
+    FileCreateDir, % strLogFolder
+
+    ; 安装PDFXChange Viewer，不区分32和64位。
+    strToRun := % """" .  strInstallSourceHome . "\" . "RevoSetup.exe" . """" . " /VERYSILENT /NOCANCEL /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /LANG=Chs /NOICONS " . " /DIR=D:\portable\RevoUninstaller_Silent_Install2 " . " /LOG=" . """" . strLogFolder . "\RevoUninstaller.log" . """" 
+    LogEvent(A_LineNumber, "准备运行 = " . strToRun)
+    ;msgbox % strToRun
+    RunWait, %strToRun%
+    LogEvent(A_LineNumber, "运行完毕 = " . strToRun)
+        
+}
+
+
+!+i::
+    Install_InputMethods()
+    return
+
+Install_InputMethods(){
+    strToRun := % """" . strInstallSourceHome . "\" . "sogou_pinyin_93e.exe" . """" . " /S"
+    LogEvent(A_LineNumber, "准备运行... = " . strToRun)
+    RunWait, %strToRun%
+
+
+    strToRun := % """" . strInstallSourceHome . "\" . "sogou_wubi_31a.exe" . """" . " /S"
+    LogEvent(A_LineNumber, "准备运行... = " . strToRun)
+    RunWait, %strToRun%
+
+}
+
+!+N::
+    Install_NotePlusPlus()
+    return
+
+Install_NotePlusPlus(){
+
+    ; https://notepad-plus-plus.org/
+    ; E:\mydoc\20190417 国英装机 0402 给蔡平易装机用到的软件\npp.7.6.6.Installer.exe
+    ; E:\mydoc\20190417 国英装机 0402 给蔡平易装机用到的软件\npp.7.6.6.Installer.x64.exe
+
+    if (A_is64BitOS = 1) {
+        strToRun := % """" . strInstallSourceHome . "\" . "npp.7.6.6.Installer.x64.exe" . """" . " /S"
+        LogEvent(A_LineNumber, "准备运行 ＝ " . strToRun)
+        RunWait % strToRun
+
+    }else{
+        strToRun := % """" . strInstallSourceHome . "\" . "npp.7.6.6.Installer.exe" . """" . " /S"
+        LogEvent(A_LineNumber, "准备运行 ＝ " . strToRun)
+        RunWait % strToRun
+    }
+   
+    SetupFileAssoc(".txt", "notepad++.exe")
+    SetupFileAssoc(".log", "notepad++.exe") 
+
+    ; 还有一点，要关掉自动运行更新的开关。
+    LogEvent(A_LineNumber, "待做事项：要关掉自动运行更新的开关。")
+
+}
+
+
+SetupFileAssoc(strExtension, strAppName){
+
+    strSetUserFTA_q2 := % """" . strInstallSourceHome . "\bin_SetUserFTA\SetUserFTA.exe" . """"
+    strRunAssoc := % strSetUserFTA_q2 . " " . strExtension . " " .  """" . "Applications" . "\" . strAppName . """"
+
+    ;msgbox % strRunAssoc
+
+    LogEvent(A_LineNumber, "准备运行应用程序与文件类型的关联 = " . strRunAssoc)
+
+    RunWait, %strRunAssoc%
+
+}
+
+!+t::
+    Install_Fonts()
+    return
+
+
+Install_Fonts() ; E:\mydoc\20190417 国英装机 0402 给蔡平易装机用到的软件\bin_fontreg-2.1.3-redist\bin.x86-64\FontReg.exe
+{
+    ; 先判断要用哪个fontreg
+    strCmd_FontReg := ""
+    if(A_Is64bitOS = 1) {
+        strCmd_FontReg := % """" . strInstallSourceHome . "\" . "bin_fontreg-2.1.3-redist\bin.x86-64\FontReg.exe" . """"
+    }else{
+        strCmd_FontReg := % """" . strInstallSourceHome . "\" . "bin_fontreg-2.1.3-redist\bin.x86-32\FontReg.exe" . """"
+    }
+    ; E:\mydoc\20190417 国英装机 0402 给蔡平易装机用到的软件\20171114 xiaobiao win7-xp 字体兼容解决办法
+    strFontDir := % """" . strInstallSourceHome . "\" . "20171114 xiaobiao win7-xp 字体兼容解决办法" . """"
+
+    strOriginalWorkDir := % A_WorkingDir
+    LogEvent(A_LineNumber, "原来的工作目录 ＝ " . strOriginalWorkDir)
+
+    SetWorkingDir % strFontDir
+    LogEvent(A_LineNumber, "现在的工作目录 ＝ " . A_WorkingDir)
+
+    ;开始转换工作
+    strCmd_ToRun := % strCmd_FontReg . " /COPY"
+    LogEvent(A_LineNumber, "待执行的命令 ＝ " . strCmd_ToRun)
+
+    RunWait % strCmd_ToRun
+
+    SetWorkingDir % strOriginalWorkDir
+    LogEvent(A_LineNumber, "现在的工作目录 ＝ " . A_WorkingDir)
+
+}
+
+!+o::
+    Install_Nero2018()
+    return
+
+
+Install_Nero2018(){
+    strNeroInstall_packPath := % """" . strInstallSourceHome . "\" . "Big_Nero2018\neroburningrom2018.exe" . """"
+               ;E:\mydoc\20190417 国英装机 0402 给蔡平易装机用到的软件\Nero2018\neroburningrom2018.exe 
+
+    strCmd_ToRun := % strNeroInstall_PackPath . " /SN=" . "908K-838A-L402-K0EE-321H-K7K7-7HMK-90U9" . " /WRITE_SN /NOCANCEL /NOREBOOT /SILENT /NO_UI "
+
+    LogEvent(A_LineNumber, "即将运行的命令是 ＝ " . strCmd_ToRun)
+
+    ;msgbox % strCmd_ToRun
+
+    RunWait % strCmd_ToRun
+
+    LogEvent(A_LineNumber, "该软件安装后需要重启，并请你手工安装好OneNero和OneBurn两个脚本。")
+
+}
+
+!+m::
+    Install_Office2007()
+    return
+
+Install_Office2007(){
+    ; 安装Office 2007
+    strFullPath_InstallPackage := % """" . strInstallSourceHome . "\" . "Big_Office2007\Office2007PJBFXLH_1.0_XiaZaiZhiJia.zip" . """"
+    strFullPath_DestExtractDir := % strInstallSourceHome . "\" . "Big_Office2007\" 
+    strExtractCommand := % strFullPath_WinRAR . " x -y " . strFullPath_InstallPackage . " " . """" . strFullPath_DestExtractDir . """"
+    ; strFullPath_WinRAR :=  % """" . "E:\Program Files\WinRAR\WinRAR.exe" . """"
+    
+    ;msgbox % strExtractCommand
+
+    LogEvent(A_LineNUmber, "即将运行的解压缩命令是 ＝ " . strExtractCommand)
+
+    RunWait % strExtractCommand
+
+    ; 开始安装操作。
+    ; E:\mydoc\20190417 国英装机 0402 给蔡平易装机用到的软件\Big_Office2007\office2007ProCN_downcc.com\office2007pro.chs\setup.exe
+    strSetup := % """" . strInstallSourceHome . "\" . "Big_Office2007\office2007ProCN_downcc.com\office2007pro.chs\setup.exe" . """"
+    strMSPFile := % """" . strInstallSourceHome . "\" . "Big_office2007\Office2007.MSP" . """"
+    strRunOfficeSetup := % strSetup . " /adminfile " . strMSPFile
+
+    msgbox % strRunOfficeSetup
+
+    LogEvent(A_LineNumber, "即将运行的安装命令是 ＝ " . strRunOfficeSetup)
+
+    RunWait % strRunOfficeSetup
+
+    LogEvent(A_LineNUmber, "完成安装命令，下一步，将安装UBit经典菜单命令")
+
+    strUBitMenu_InstallPack := % """" . strInstallSourceHome . "\" . "Big_Office2007\UBitMenuSetupZH Jian Ti.exe" . """"
+    strUBitMenu_InstallSwitches := % " /VERYSILENT /NOCANCEL /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /LANG=Chs /NOICONS " .  " /LOG=" . """" . strLogFolder . "\UBitMenu.log" . """" 
+    strCmd_ToRun := % strUBitMenu_InstallPack . strUBitMenu_InstallSwitches
+
+    msgbox % strCmd_ToRun
+
+    LogEvent(A_LineNumber, strCmd_ToRun)
+
+    RunWait % strCmd_ToRun
+
+    LogEvent(A_LineNumber, "圆满完成Office 2007的安装")
+    
+
+    
+}
+
+
+!+h::
+    Install_HuoRong()
+    return
+
+Install_HuoRong(){ ; /S 静默安装。
+    ; 此处要加上参数，完整码＋后缀来罗列，并举出最新版的。
 }
